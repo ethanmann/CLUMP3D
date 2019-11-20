@@ -86,6 +86,7 @@ assert len(SubMKS) == 26 # confirmation of length from Mathematica notebook
 #
 #
 # H0TohSub={H0->100h km/(10^6 pc)}/.SubMKS//N;
+H0TohSub = lambda h: 100 * h * SubMKS['km']/(10**6 * SubMKS['pc'])
 # CritSub={\[CapitalSigma]Cr->c^2/(4\[Pi] G) Ds/(Dd Dds),\[Rho]Cr->(3H^2)/(8\[Pi] G)};
 # \[CapitalOmega]Mz=(\[CapitalOmega]M0 (1+z)^3)/(\[CapitalOmega]M0 (1+z)^3+(1-\[CapitalOmega]M0));
 #

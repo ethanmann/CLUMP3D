@@ -1,7 +1,10 @@
 import cluster_config
 import file_readers
 import os
-import preliminaries as prelim
+import prelim
+
+import triaxial_prelim
+const = triaxial_prelim.SubMKS
 
 ###########################################################################
 # markov chain monte carlo variables (ML)
@@ -62,14 +65,11 @@ if GLXSZ3DStringToAddTmp1 != "" and GLXSZ3DStringToAddTmp1[0] != "_":
 
 ###########################################################################
 # cosmological parameters and units (JS)
-
-# SEE preliminaries.py
-# omegaM0v, hv, pull from astropy
-# omegaLambda0v = 1 - omegaM0v
-
-MUnits = 10**15 * prelim.MSunMKS / prelim.hv
-rUnits = prelim.MpcMKS / prelim.hv
-PUnits = prelim.G * MUnits**2 / rUnits**2   # G M^2 / (R * R^3)
+(omegaM0v, hv) = (0.3, 0.7)
+omegaLambda0v = 1 - omegaM0v
+MUnits = 10**15 * prelim.MSunMKS / hv
+rUnits = prelim.MpcMKS / hv
+PUnits = const['G'] * MUnits**2 / rUnits**4 # G M^2 / (R * R^3)
 ###########################################################################
 
 ###########################################################################
@@ -82,14 +82,14 @@ ThetaInnerCut = 5./60 #(arcmin); (*M1206, §4.2 in umetsu+12*)
 # TODO - some code from this section omitted; add it in (if relevant)
 
 # "some conversion factors from observed quantities to physical quantities" -JS
-nHeOnnH = 7.72 * 10**(-2) # primordial
-mh, xeh, xh = (0.01, 0.005, 5*10**(-4)) # electrons from elements heavier than helium
+nHeOnnH = 7.72*(10**-2) # primordial
+mh, xeh, xh = (0.01, 0.005, 5*(10**-4)) # electrons from elements heavier than helium
 nHOnnev = 1 / (1 + 2 * nHeOnnH + xeh)
 muICMv = (1 + 4 * nHeOnnH + mh) / (2 + 3 * nHeOnnH + xeh + xh)
-RhoGasOnnev = prelim.mu * (1 + 4 * nHeOnnH + mh) / (1 + 2 * nHeOnnH + xeh)
+RhoGasOnnev = const['mu'] * (1 + 4 * nHeOnnH + mh) / (1 + 2 * nHeOnnH + xeh)
 zLensingSourcesv = 20000 # reference redshift of WL background galaxies
 
-DHv = lambda h: prelim.c / prelim.H0(h)
+DHv = lambda h: const['c'] / triaxial_prelim.H0TohSub(h)
 
 
 # read in weak lensing data from Umetsu + 2016
@@ -103,4 +103,6 @@ cluster_configuration = cluster_config.ClusterConfig()
 file_readers.import_cluster_info(cluster_configuration)
 file_readers.import_gl_info(cluster_configuration)
 file_readers.import_sz_info(cluster_configuration)
+
+print(cluster_configuration)
 ###########################################################################
